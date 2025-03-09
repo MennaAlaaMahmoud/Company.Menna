@@ -1,3 +1,8 @@
+using Company.Menna.BLL.Interfaces;
+using Company.Menna.BLL.Repositories;
+using Company.Menna.DAL.Data.Context;
+using Microsoft.EntityFrameworkCore;
+
 namespace Company.Menna.PL
 {
     public class Program
@@ -8,6 +13,12 @@ namespace Company.Menna.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IDepartmentRepositories, DepartmentRepositories>(); // Allow DI For DepartmentRepositories
+            builder.Services.AddDbContext<CompanyDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            }); // Allow DI For CompanyDbContext
+                                                               
 
             var app = builder.Build();
 

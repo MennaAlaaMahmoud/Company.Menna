@@ -11,7 +11,8 @@ namespace Company.Menna.DAL.Data.Context
 {
     public class CompanyDbContext : DbContext
     {
-        public CompanyDbContext() : base()
+        // CLR
+        public CompanyDbContext(DbContextOptions<CompanyDbContext> options) : base(options)
         {
             
         }
@@ -23,10 +24,10 @@ namespace Company.Menna.DAL.Data.Context
             base.OnModelCreating(modelBuilder);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server =.; Database = Company; Trusted_Connection = True; TrustServerCertificate = True");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server =.; Database = Company; Trusted_Connection = True; TrustServerCertificate = True");
+        //}
 
 
         public DbSet<Department> Departments { get; set; }
