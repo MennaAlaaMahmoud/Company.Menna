@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Company.Menna.DAL\Company.Menna.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
