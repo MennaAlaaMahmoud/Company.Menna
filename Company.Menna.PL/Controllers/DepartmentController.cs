@@ -52,5 +52,19 @@ namespace Company.Menna.PL.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if (id is null) return BadRequest("Invalid Id");// 400
+
+           var department = _departmentRepositories.Get(id.Value);
+            if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
+
+            return View(department);
+
+        }
+
+
+
     }
 }
