@@ -53,26 +53,26 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public IActionResult Details(int? id , string viewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id");// 400
 
            var department = _departmentRepositories.Get(id.Value);
             if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
 
-            return View(department);
+            return View(viewName,department);
 
         }
 
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id is null) return BadRequest("Invalid Id");// 400
+            //if (id is null) return BadRequest("Invalid Id");// 400
 
-            var department = _departmentRepositories.Get(id.Value);
-            if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
+            //var department = _departmentRepositories.Get(id.Value);
+            //if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
 
-            return View(department);
+            return Details(id, "Edit");
         }
 
         [HttpPost]
@@ -128,12 +128,12 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            if (id is null) return BadRequest("Invalid Id");// 400
+            //if (id is null) return BadRequest("Invalid Id");// 400
 
-            var department = _departmentRepositories.Get(id.Value);
-            if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
+            //var department = _departmentRepositories.Get(id.Value);
+            //if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
 
-            return View(department);
+            return Details(id,"Delete");
         }
 
         [HttpPost]
