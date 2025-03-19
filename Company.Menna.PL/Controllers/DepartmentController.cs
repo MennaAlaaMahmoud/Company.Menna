@@ -49,7 +49,7 @@ namespace Company.Menna.PL.Controllers
                 }
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
