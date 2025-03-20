@@ -1,4 +1,4 @@
-﻿@model Department
+﻿@model CreateDepartmentDto
 @{
     ViewData["Title"] = "Edit";
 }
@@ -9,20 +9,7 @@
 
 
 <form asp-action="Edit">
-    <div class="my-3">
-        <label asp-for="Code" class="col-form-label"></label>
-        <input asp-for="Code" class="form-control" />
-    </div>
-    <div class="my-3">
-        <label asp-for="Name" class="col-form-label"></label>
-        <input asp-for="Name" class="form-control" />
-
-    </div>
-    <div class="my-3">
-        <label asp-for="CreateAt" class="col-form-label"></label>
-        <input asp-for="CreateAt" class="form-control" />
-
-    </div>
+    <partial name="DepartmentPartialView/_CreateEditView" />
 
     <div>
         <input type="submit" value="Save" class="btn btn-success" />
@@ -31,3 +18,7 @@
 
 </form>
 
+@section ValidationSection {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
