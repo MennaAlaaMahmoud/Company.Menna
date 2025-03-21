@@ -68,16 +68,50 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Edit (int? id)
         {
-            return Details(id , "Edit");
+            if (id is null) return BadRequest("Invalid Id");// 400
+
+            var employee = _employeeRepository.Get(id.Value);
+            if (employee is null) return NotFound(new { StatusCode = 400, message = $"Employee With Id : {id} is not found" });
+            var employeeDto = new CreateEmployeeDto()
+            {
+               
+                Name = employee.Name,
+                Address = employee.Address,
+                Age = employee.Age,
+                CreateAt = employee.CreateAt,
+                HiringDate = employee.HiringDate,
+                Email = employee.Email,
+                IsActive = employee.IsActive,
+                IsDelete = employee.IsDelete,
+                Phone = employee.Phone,
+                Salary = employee.Salary,
+
+            };
+            return View(employeeDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id,Employee employee)
+        public IActionResult Edit([FromRoute] int id,CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != employee.Id) return BadRequest();
+                // if (id != employee.Id) return BadRequest();
+                var employee = new Employee()
+                {
+                    Id = id,
+                    Name = model.Name,
+                    Address = model.Address,
+                    Age = model.Age,
+                    CreateAt = model.CreateAt,
+                    HiringDate = model.HiringDate,
+                    Email = model.Email,
+                    IsActive = model.IsActive,
+                    IsDelete = model.IsDelete,
+                    Phone = model.Phone,
+                    Salary = model.Salary,
+
+                };
                 var count = _employeeRepository.Update(employee);
                 if (count > 0)
                 {
@@ -85,7 +119,7 @@ namespace Company.Menna.PL.Controllers
                 }
             }
 
-            return View(employee);
+            return View(model);
         }
 
         [HttpGet]

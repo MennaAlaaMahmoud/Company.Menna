@@ -67,22 +67,32 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            //if (id is null) return BadRequest("Invalid Id");// 400
+            if (id is null) return BadRequest("Invalid Id");// 400
 
-            //var department = _departmentRepositories.Get(id.Value);
-            //if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
-
-            return Details(id, "Edit");
+            var department = _departmentRepositories.Get(id.Value);
+            if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
+            var departmentDto = new CreateDepartmentDto()
+            {
+                Name = department.Name,
+                CreateAt = department.CreateAt,
+            };
+            return View(departmentDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public IActionResult Edit([FromRoute] int id, Department model)
         {
 
             if (ModelState.IsValid)
             {
-                if (id != department.Id) return BadRequest();
+                //  if (id != department.Id) return BadRequest();
+                var department = new Department()
+                {
+                    Code = model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt,
+                };
                 {
                     var Count = _departmentRepositories.Update(department);
                     if (Count > 0)
@@ -93,7 +103,7 @@ namespace Company.Menna.PL.Controllers
             }
 
 
-            return View(department);
+            return View(model);
         }
 
 
