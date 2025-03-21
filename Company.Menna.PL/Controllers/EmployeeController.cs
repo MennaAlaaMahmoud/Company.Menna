@@ -19,6 +19,15 @@ namespace Company.Menna.PL.Controllers
         public IActionResult Index()
         {
             var employee = _employeeRepository.GetAll();
+            // Dictionary  : 3 Property 
+            // 1. ViewData : Transfer Extra Information Form Controller (Action) To View 
+            //ViewData["Message"] = "Hello From ViewData";
+
+            // 2. ViewBag  : Transfer Extra Information Form Controller (Action) To View    
+           // ViewBag.Message =  new { Message = "Hello From ViewBag" };
+
+
+
             return View(employee);
         }
 
@@ -50,6 +59,7 @@ namespace Company.Menna.PL.Controllers
                 var count = _employeeRepository.Add(employee);
                 if (count > 0)
                 {
+                    TempData["Message"] = "Employee is Created !!";
                     return RedirectToAction(nameof(Index));
                 }
 

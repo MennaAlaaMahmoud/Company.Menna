@@ -45,7 +45,9 @@ namespace Company.Menna.PL.Controllers
                var count = _departmentRepositories.Add(department);
                 if(count > 0)
                 {
+                    TempData["Message"] = "Department is Created !!";
                     return RedirectToAction(nameof(Index));
+                   
                 }
             }
 
