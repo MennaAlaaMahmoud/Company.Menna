@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Company.Menna.BLL.Interfaces;
 using Company.Menna.DAL.Data.Context;
 using Company.Menna.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Company.Menna.BLL.Repositories
 {
@@ -19,11 +20,19 @@ namespace Company.Menna.BLL.Repositories
         }
         public IEnumerable<T> GetAll()
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return (IEnumerable<T>)_context.Employees.Include(E => E.Department).ToList();
+            }
             return _context.Set<T>().ToList();
         }
 
         public T? Get(int id)
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return _context.Employees.Include(E => E.Department).FirstOrDefault(E => E.Id == id) as T;
+            }
             return _context.Set<T>().Find(id);
         }
 
@@ -38,14 +47,10 @@ namespace Company.Menna.BLL.Repositories
             _context.Set<T>().Update(model);
             return _context.SaveChanges();
         }
-
         public int Delete(T model)
         {
             _context.Set<T>().Remove(model);
             return _context.SaveChanges();
         }
-
-      
-    
     }
 }

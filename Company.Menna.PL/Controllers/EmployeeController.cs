@@ -9,10 +9,12 @@ namespace Company.Menna.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IDepartmentRepositories _departmentRepositories;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository , IDepartmentRepositories departmentRepositories )
         {
             _employeeRepository = employeeRepository;
+            _departmentRepositories = departmentRepositories;
         }
 
         [HttpGet]
@@ -34,6 +36,8 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+         var departments = _departmentRepositories.GetAll();
+            ViewData["departments"] = departments;
             return View();
         }
 
@@ -54,7 +58,7 @@ namespace Company.Menna.PL.Controllers
                     IsDelete = model.IsDelete,
                     Phone = model.Phone,
                     Salary = model.Salary,
-
+                    DepartmentId = model.DepartmentId
                 };
                 var count = _employeeRepository.Add(employee);
                 if (count > 0)
@@ -78,6 +82,8 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Edit (int? id)
         {
+            var departments = _departmentRepositories.GetAll();
+            ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id");// 400
 
             var employee = _employeeRepository.Get(id.Value);
