@@ -14,6 +14,13 @@ namespace Company.Menna.DAL.Data.Configrutions
         public void Configure(EntityTypeBuilder<Employee> E)
         {
             E.Property(E => E.Salary).HasColumnType("decimal(18,2)");
+
+            E.HasOne(E => E.Department)
+             .WithMany(D => D.employees)
+             .HasForeignKey(E => E.DepartmentId)
+             .OnDelete(DeleteBehavior.SetNull);
+
+
         }
     }
 }
