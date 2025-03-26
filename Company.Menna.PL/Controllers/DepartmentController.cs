@@ -9,25 +9,38 @@ namespace Company.Menna.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepositories _departmentRepositories;
+        private readonly IEmployeeRepository _employeeRepository;
 
         // ASK CLR Create Object From DepartmentRepositories
-        public DepartmentController(IDepartmentRepositories departmentRepositories)
+        public DepartmentController(IDepartmentRepositories departmentRepositories , IEmployeeRepository employeeRepository)
         {
             _departmentRepositories = departmentRepositories;
+            _employeeRepository = employeeRepository;
         }
 
         [HttpGet] // Get: / Department /Index 
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
+            IEnumerable<Department> departments;
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                departments = _departmentRepositories.GetAll();
+            }
+            else
+            {
+                departments = _departmentRepositories.GetByName(SearchInput);
+            }
 
-            var department = _departmentRepositories.GetAll();
+        
 
-            return View(department);
+            return View(departments);
         }
 
         [HttpGet]
         public IActionResult Create()
-        { 
+        {
+            var employee = _employeeRepository.GetAll();
+            ViewData["employee"] = employee;
             return View();
         }
 
@@ -69,6 +82,8 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            var employee = _employeeRepository.GetAll();
+            ViewData["employee"] = employee;
             if (id is null) return BadRequest("Invalid Id");// 400
 
             var department = _departmentRepositories.Get(id.Value);

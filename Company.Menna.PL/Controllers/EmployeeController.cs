@@ -18,19 +18,33 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
-            var employee = _employeeRepository.GetAll();
-            // Dictionary  : 3 Property 
-            // 1. ViewData : Transfer Extra Information Form Controller (Action) To View 
-            //ViewData["Message"] = "Hello From ViewData";
+            IEnumerable<Employee> employees;
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                employees = _employeeRepository.GetAll();
+            }
+            else
+            {
+                employees = _employeeRepository.GetByName(SearchInput);
+            }
 
-            // 2. ViewBag  : Transfer Extra Information Form Controller (Action) To View    
-           // ViewBag.Message =  new { Message = "Hello From ViewBag" };
+            // Dictionary   : 3 Property
+            // 1. ViewData  : Transfer Extra Information From Controller (Action) To View
+
+            //ViewData["Message"] = "Hello From ViewDat,a";
+
+            // 2. ViewBag   : Transfer Extra Information From Controller (Action) To View
+
+            //ViewBag.Massage = "Hello From ViewBag";
+
+            //ViewBag.Message = new { Message = "Hello From ViewBag" };
+
+            // 3. TempData  :
 
 
-
-            return View(employee);
+            return View(employees);
         }
 
         [HttpGet]
