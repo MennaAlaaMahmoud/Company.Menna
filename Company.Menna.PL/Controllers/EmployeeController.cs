@@ -60,6 +60,7 @@ namespace Company.Menna.PL.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Manual Mapping
                 var employee = new Employee()
                 {
                     Name = model.Name,
