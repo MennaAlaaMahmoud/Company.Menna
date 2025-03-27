@@ -1,6 +1,7 @@
 using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Data.Context;
+using Company.Menna.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Menna.PL
@@ -19,7 +20,17 @@ namespace Company.Menna.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI For CompanyDbContext
-                                                               
+
+            // Life Time
+            //builder.Services.AddScoped();    // Create Object Life Per Request - UnReachable Object 
+            //builder.Services.AddTransient(); // Create Object Life Per Operation 
+            //builder.Services.AddSingleton(); // Create Object Life Per Application
+
+            builder.Services.AddScoped<IScopedService ,ScopedService>(); // Per Request
+            builder.Services.AddTransient<ITransentService, TransentService>(); // Per Operation
+            builder.Services.AddSingleton<ISingletonService, SingletonService>(); // Per Application
+
+
 
             var app = builder.Build();
 
