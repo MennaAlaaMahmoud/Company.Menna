@@ -1,4 +1,5 @@
-﻿using Company.Menna.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Models;
 using Company.Menna.PL.Dtos;
@@ -8,14 +9,22 @@ namespace Company.Menna.PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepositories _departmentRepositories;
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        //private readonly IDepartmentRepositories _departmentRepositories;
+        //private readonly IEmployeeRepository _employeeRepository;
+        private readonly IMapper  _mapper;
 
         // ASK CLR Create Object From DepartmentRepositories
-        public DepartmentController(IDepartmentRepositories departmentRepositories , IEmployeeRepository employeeRepository)
+        public DepartmentController(
+            IUnitOfWork unitOfWork,   
+            IMapper mapper
+            )
         {
-            _departmentRepositories = departmentRepositories;
-            _employeeRepository = employeeRepository;
+            //_departmentRepositories = departmentRepositories;
+            //_employeeRepository = employeeRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet] // Get: / Department /Index 
@@ -24,11 +33,11 @@ namespace Company.Menna.PL.Controllers
             IEnumerable<Department> departments;
             if (string.IsNullOrEmpty(SearchInput))
             {
-                departments = _departmentRepositories.GetAll();
+                departments = _unitOfWork.departmentRepositories.GetAll();
             }
             else
             {
-                departments = _departmentRepositories.GetByName(SearchInput);
+                departments = _unitOfWork.departmentRepositories.GetByName(SearchInput);
             }
 
         
@@ -39,7 +48,7 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var employee = _employeeRepository.GetAll();
+            var employee = _unitOfWork.employeeRepository.GetAll();
             ViewData["employee"] = employee;
             return View();
         }
@@ -47,23 +56,18 @@ namespace Company.Menna.PL.Controllers
         [HttpPost]
         public IActionResult Create(CreateDepartmentDto model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var department = new Department()
-                {
-                    Code = model.Code,
-                    Name = model.Name,
-                    CreateAt = model.CreateAt,
-                };
-               var count = _departmentRepositories.Add(department);
-                if(count > 0)
+                var department = _mapper.Map<Department>(model);
+                _unitOfWork.departmentRepositories.Add(department);
+                var count = _unitOfWork.Complete();
+                if (count > 0)
                 {
                     TempData["Message"] = "Department is Created !!";
                     return RedirectToAction(nameof(Index));
-                   
                 }
-            }
 
+            }
             return View(model);
         }
 
@@ -72,7 +76,7 @@ namespace Company.Menna.PL.Controllers
         {
             if (id is null) return BadRequest("Invalid Id");// 400
 
-           var department = _departmentRepositories.Get(id.Value);
+           var department = _unitOfWork.departmentRepositories.Get(id.Value);
             if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
 
             return View(viewName,department);
@@ -82,45 +86,34 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            var employee = _employeeRepository.GetAll();
-            ViewData["employee"] = employee;
+            var departments = _unitOfWork.employeeRepository.GetAll();
+            ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id");// 400
 
-            var department = _departmentRepositories.Get(id.Value);
-            if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
-            var departmentDto = new CreateDepartmentDto()
-            {
-                Name = department.Name,
-                CreateAt = department.CreateAt,
-            };
-            return View(departmentDto);
+            var department = _unitOfWork.departmentRepositories.Get(id.Value);
+            if (department is null) return NotFound(new { StatusCode = 400, message = $"Employee With Id : {id} is not found" });
+            var dto = _mapper.Map<CreateDepartmentDto>(department);
+
+            return View(dto);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department model)
+       // [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromRoute] int id, CreateDepartmentDto model , string viewName = "Edit")
         {
 
             if (ModelState.IsValid)
             {
-                //  if (id != department.Id) return BadRequest();
-                var department = new Department()
+                var department = _mapper.Map<Department>(model);
+                _unitOfWork.departmentRepositories.Update(department);
+                var count = _unitOfWork.Complete();
+                if (count > 0)
                 {
-                    Code = model.Code,
-                    Name = model.Name,
-                    CreateAt = model.CreateAt,
-                };
-                {
-                    var Count = _departmentRepositories.Update(department);
-                    if (Count > 0)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
-
-            return View(model);
+            return View(viewName, model);
         }
 
 
@@ -165,23 +158,20 @@ namespace Company.Menna.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Department department)
+        public IActionResult Delete([FromRoute] int id, CreateDepartmentDto model)
         {
 
             if (ModelState.IsValid)
             {
-                if (id != department.Id) return BadRequest();
+                var department = _mapper.Map<Department>(model);
+                _unitOfWork.departmentRepositories.Delete(department);
+                var count = _unitOfWork.Complete();
+                if (count > 0)
                 {
-                    var Count = _departmentRepositories.Delete(department);
-                    if (Count > 0)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
+                    return RedirectToAction(nameof(Index));
                 }
             }
-
-
-            return View(department);
+            return View(model);
         }
 
 
