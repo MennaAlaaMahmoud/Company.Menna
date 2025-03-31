@@ -1,4 +1,5 @@
-﻿using Company.Menna.BLL.Interfaces;
+﻿using AutoMapper;
+using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Models;
 using Company.Menna.PL.Dtos;
@@ -8,13 +9,25 @@ namespace Company.Menna.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepositories _departmentRepositories;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EmployeeController(IEmployeeRepository employeeRepository , IDepartmentRepositories departmentRepositories )
+        //private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IDepartmentRepositories _departmentRepositories;
+
+        private readonly IMapper _mapper;
+
+        public EmployeeController(
+            //IEmployeeRepository employeeRepository ,
+            //IDepartmentRepositories departmentRepositories,
+            IUnitOfWork unitOfWork,
+            IMapper mapper
+            )
         {
-            _employeeRepository = employeeRepository;
-            _departmentRepositories = departmentRepositories;
+            _unitOfWork = unitOfWork;
+            //_employeeRepository = employeeRepository;
+            //_departmentRepositories = departmentRepositories;
+
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -23,11 +36,11 @@ namespace Company.Menna.PL.Controllers
             IEnumerable<Employee> employees;
             if (string.IsNullOrEmpty(SearchInput))
             {
-                employees = _employeeRepository.GetAll();
+                employees =_unitOfWork.employeeRepository.GetAll();
             }
             else
             {
-                employees = _employeeRepository.GetByName(SearchInput);
+                employees = _unitOfWork.employeeRepository.GetByName(SearchInput);
             }
 
             // Dictionary   : 3 Property
@@ -50,7 +63,7 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-         var departments = _departmentRepositories.GetAll();
+         var departments = _unitOfWork.departmentRepositories.GetAll();
             ViewData["departments"] = departments;
             return View();
         }
@@ -60,22 +73,9 @@ namespace Company.Menna.PL.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Manual Mapping
-                var employee = new Employee()
-                {
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Email = model.Email,
-                    IsActive = model.IsActive,
-                    IsDelete = model.IsDelete,
-                    Phone = model.Phone,
-                    Salary = model.Salary,
-                    DepartmentId = model.DepartmentId
-                };
-                var count = _employeeRepository.Add(employee);
+               var employee = _mapper.Map<Employee>(model);
+                  _unitOfWork.employeeRepository.Add(employee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     TempData["Message"] = "Employee is Created !!";
@@ -89,68 +89,43 @@ namespace Company.Menna.PL.Controllers
         public IActionResult Details(int? id , string viewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id");
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.employeeRepository.Get(id.Value);
             if(employee is null) return NotFound(new {StatusCode =404, message =$"Employee With Id : {id} is not found" });
-            return View(viewName , employee);
+           
+
+            return View(employee);
         }
 
         [HttpGet]
         public IActionResult Edit (int? id)
         {
-            var departments = _departmentRepositories.GetAll();
+            var departments = _unitOfWork.departmentRepositories.GetAll();
             ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id");// 400
 
-            var employee = _employeeRepository.Get(id.Value);
+            var employee = _unitOfWork.employeeRepository.Get(id.Value);
             if (employee is null) return NotFound(new { StatusCode = 400, message = $"Employee With Id : {id} is not found" });
-            var employeeDto = new CreateEmployeeDto()
-            {
-               
-                Name = employee.Name,
-                Address = employee.Address,
-                Age = employee.Age,
-                CreateAt = employee.CreateAt,
-                HiringDate = employee.HiringDate,
-                Email = employee.Email,
-                IsActive = employee.IsActive,
-                IsDelete = employee.IsDelete,
-                Phone = employee.Phone,
-                Salary = employee.Salary,
+           var dto = _mapper.Map<CreateEmployeeDto>(employee);
 
-            };
-            return View(employeeDto);
+            return View(dto);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id,CreateEmployeeDto model)
+        //[ValidateAntiForgeryToken]
+        public IActionResult Edit([FromRoute] int id,CreateEmployeeDto model, string viewName = "Edit")
         {
             if (ModelState.IsValid)
             {
-                // if (id != employee.Id) return BadRequest();
-                var employee = new Employee()
-                {
-                    Id = id,
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    Email = model.Email,
-                    IsActive = model.IsActive,
-                    IsDelete = model.IsDelete,
-                    Phone = model.Phone,
-                    Salary = model.Salary,
-
-                };
-                var count = _employeeRepository.Update(employee);
+                var employee = _mapper.Map<Employee>(model);
+                _unitOfWork.employeeRepository.Update(employee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
 
-            return View(model);
+            return View(viewName,model);
         }
 
         [HttpGet]
@@ -160,19 +135,20 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id , Employee employee)
+       // [ValidateAntiForgeryToken]
+        public IActionResult Delete([FromRoute] int id , CreateEmployeeDto model )
         {
             if (ModelState.IsValid)
             {
-                if (id != employee.Id) return BadRequest();
-                var count = _employeeRepository.Delete(employee);
+               var employee = _mapper.Map<Employee>(model);
+                _unitOfWork.employeeRepository.Delete(employee);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(employee);
+            return View(model);
         }
     
     }

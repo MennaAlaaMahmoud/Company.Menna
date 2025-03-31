@@ -1,6 +1,8 @@
+using Company.Menna.BLL;
 using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Data.Context;
+using Company.Menna.PL.Mapping;
 using Company.Menna.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +18,20 @@ namespace Company.Menna.PL
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentRepositories, DepartmentRepositories>(); // Allow DI For DepartmentRepositories
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositories>(); // Allow DI For DepartmentRepositories
+
+            builder.Services.AddScoped<IUnitOfWork,Unitofwork >(); 
+
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI For CompanyDbContext
+
+
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile())); 
+            builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile())); 
+        
+            
+
 
             // Life Time
             //builder.Services.AddScoped();    // Create Object Life Per Request - UnReachable Object 
