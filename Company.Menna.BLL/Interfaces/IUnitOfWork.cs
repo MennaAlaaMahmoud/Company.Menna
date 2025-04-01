@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Company.Menna.BLL.Interfaces
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IAsyncDisposable
     {
          IDepartmentRepositories departmentRepositories  { get; }
          IEmployeeRepository employeeRepository { get; }
-        int Complete();
+        Task<int> CompleteAsync();
     }
 }

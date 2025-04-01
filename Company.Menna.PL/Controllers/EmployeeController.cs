@@ -3,7 +3,9 @@ using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Models;
 using Company.Menna.PL.Dtos;
+using Company.Menna.PL.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 
 namespace Company.Menna.PL.Controllers
 {
@@ -31,16 +33,16 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(string? SearchInput)
+        public async Task<IActionResult> Index(string? SearchInput)
         {
             IEnumerable<Employee> employees;
             if (string.IsNullOrEmpty(SearchInput))
             {
-                employees =_unitOfWork.employeeRepository.GetAll();
+                employees =await _unitOfWork.employeeRepository.GetAllAsync();
             }
             else
             {
-                employees = _unitOfWork.employeeRepository.GetByName(SearchInput);
+                employees = await _unitOfWork.employeeRepository.GetByNameAsync(SearchInput);
             }
 
             // Dictionary   : 3 Property
@@ -61,23 +63,27 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-         var departments = _unitOfWork.departmentRepositories.GetAll();
+         var departments = await _unitOfWork.departmentRepositories.GetAllAsync();
             ViewData["departments"] = departments;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(CreateEmployeeDto model)
+        public async Task<IActionResult> Create(CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-               var employee = _mapper.Map<Employee>(model);
-                  _unitOfWork.employeeRepository.Add(employee);
-                var count = _unitOfWork.Complete();
-                if (count > 0)
+                if (model.Image is not null)
                 {
+                  model.ImageName =  DocumentSettings.UploadFile(model.Image, "Images");
+                }
+                 var employee = _mapper.Map<Employee>(model);
+                 await _unitOfWork.employeeRepository.AddAsync(employee);
+                var count = await _unitOfWork.CompleteAsync();
+                if (count > 0)
+                { 
                     TempData["Message"] = "Employee is Created !!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -86,10 +92,10 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id , string viewName = "Details")
+        public async Task<IActionResult> Details(int? id , string viewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id");
-            var employee = _unitOfWork.employeeRepository.Get(id.Value);
+            var employee = await _unitOfWork.employeeRepository.GetAsync(id.Value);
             if(employee is null) return NotFound(new {StatusCode =404, message =$"Employee With Id : {id} is not found" });
            
 
@@ -97,13 +103,13 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit (int? id)
+        public async Task<IActionResult> Edit (int? id)
         {
-            var departments = _unitOfWork.departmentRepositories.GetAll();
+            var departments = await _unitOfWork.departmentRepositories.GetAllAsync();
             ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id");// 400
 
-            var employee = _unitOfWork.employeeRepository.Get(id.Value);
+            var employee = await _unitOfWork.employeeRepository.GetAsync(id.Value);
             if (employee is null) return NotFound(new { StatusCode = 400, message = $"Employee With Id : {id} is not found" });
            var dto = _mapper.Map<CreateEmployeeDto>(employee);
 
@@ -112,13 +118,22 @@ namespace Company.Menna.PL.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id,CreateEmployeeDto model, string viewName = "Edit")
+        public async  Task<IActionResult> Edit([FromRoute] int id,CreateEmployeeDto model, string viewName = "Edit")
         {
             if (ModelState.IsValid)
             {
+                if (model.Image is not null  && model.Image is not null)
+                {
+                    DocumentSettings.DeleteFile(model.ImageName, "Images");
+                }
+
+                if (model.Image is not null)
+                {
+                   model.ImageName = DocumentSettings.UploadFile(model.Image, "Images");
+                }
                 var employee = _mapper.Map<Employee>(model);
                 _unitOfWork.employeeRepository.Update(employee);
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -129,27 +144,35 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id ,"Delete");
+            return await Details(id ,"Delete");
         }
 
         [HttpPost]
-       // [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id , CreateEmployeeDto model )
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete([FromRoute] int? id, Employee employee)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            if (id is null) return BadRequest($" This Id = {id} InValid");
+
+            var departmentDelete = await _unitOfWork.employeeRepository.GetAsync(id.Value);
+            _unitOfWork.employeeRepository.Delete(departmentDelete);
+
+            var Count = await _unitOfWork.CompleteAsync();
+
+            if (Count > 0)
             {
-               var employee = _mapper.Map<Employee>(model);
-                _unitOfWork.employeeRepository.Delete(employee);
-                var count = _unitOfWork.Complete();
-                if (count > 0)
+                if(departmentDelete.ImageName is not null)
                 {
-                    return RedirectToAction(nameof(Index));
+                    DocumentSettings.DeleteFile(departmentDelete.ImageName, "Images");
                 }
+                return RedirectToAction("Index");
             }
-            return View(model);
+            //}
+            return View(employee);
         }
-    
+
     }
 }

@@ -28,16 +28,16 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet] // Get: / Department /Index 
-        public IActionResult Index(string? SearchInput)
+        public async Task<IActionResult> Index(string? SearchInput)
         {
             IEnumerable<Department> departments;
             if (string.IsNullOrEmpty(SearchInput))
             {
-                departments = _unitOfWork.departmentRepositories.GetAll();
+                departments = await _unitOfWork.departmentRepositories.GetAllAsync();
             }
             else
             {
-                departments = _unitOfWork.departmentRepositories.GetByName(SearchInput);
+                departments = await _unitOfWork.departmentRepositories.GetByNameAsync(SearchInput);
             }
 
         
@@ -46,21 +46,21 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var employee = _unitOfWork.employeeRepository.GetAll();
+            var employee = await _unitOfWork.employeeRepository.GetAllAsync();
             ViewData["employee"] = employee;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(CreateDepartmentDto model)
+        public async Task<IActionResult> Create(CreateDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
                 var department = _mapper.Map<Department>(model);
-                _unitOfWork.departmentRepositories.Add(department);
-                var count = _unitOfWork.Complete();
+                await _unitOfWork.departmentRepositories.AddAsync(department);
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     TempData["Message"] = "Department is Created !!";
@@ -72,11 +72,11 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id , string viewName = "Details")
+        public async Task< IActionResult> Details(int? id , string viewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id");// 400
 
-           var department = _unitOfWork.departmentRepositories.Get(id.Value);
+           var department = await _unitOfWork.departmentRepositories.GetAsync(id.Value);
             if (department is null) return NotFound(new { StatusCode = 400, message = $"Department With Id : {id} is not found" });
 
             return View(viewName,department);
@@ -84,13 +84,13 @@ namespace Company.Menna.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var departments = _unitOfWork.employeeRepository.GetAll();
+            var departments = await _unitOfWork.employeeRepository.GetAllAsync();
             ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id");// 400
 
-            var department = _unitOfWork.departmentRepositories.Get(id.Value);
+            var department =  await _unitOfWork.departmentRepositories.GetAsync(id.Value);
             if (department is null) return NotFound(new { StatusCode = 400, message = $"Employee With Id : {id} is not found" });
             var dto = _mapper.Map<CreateDepartmentDto>(department);
 
@@ -99,14 +99,14 @@ namespace Company.Menna.PL.Controllers
 
         [HttpPost]
        // [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, CreateDepartmentDto model , string viewName = "Edit")
+        public async Task<IActionResult> Edit([FromRoute] int id, CreateDepartmentDto model , string viewName = "Edit")
         {
 
             if (ModelState.IsValid)
             {
                 var department = _mapper.Map<Department>(model);
                 _unitOfWork.departmentRepositories.Update(department);
-                var count = _unitOfWork.Complete();
+                var count =  await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -146,7 +146,7 @@ namespace Company.Menna.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public Task<IActionResult> Delete(int? id)
         {
             //if (id is null) return BadRequest("Invalid Id");// 400
 
@@ -158,22 +158,25 @@ namespace Company.Menna.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, CreateDepartmentDto model)
+        public async Task<IActionResult> Delete([FromRoute] int? id, Department department)
         {
+            //if (ModelState.IsValid)
+            //{
+            if (id is null) return BadRequest($" This Id = {id} InValid");
 
-            if (ModelState.IsValid)
+
+            var departmentDelete = await _unitOfWork.departmentRepositories.GetAsync(id.Value);
+            _unitOfWork.departmentRepositories.Delete(departmentDelete);
+
+            var Count = await _unitOfWork.CompleteAsync();
+
+            if (Count > 0)
             {
-                var department = _mapper.Map<Department>(model);
-                _unitOfWork.departmentRepositories.Delete(department);
-                var count = _unitOfWork.Complete();
-                if (count > 0)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            //}
+            return View(department);
         }
-
 
 
 
