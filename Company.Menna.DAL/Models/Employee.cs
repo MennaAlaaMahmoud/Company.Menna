@@ -21,5 +21,6 @@ namespace Company.Menna.DAL.Models
         public DateTime CreateAt { get; set; }
         public int? DepartmentId { get; set; }
         public Department Department { get; set; }
+        public string? ImageName { get; set; }
     }
 }

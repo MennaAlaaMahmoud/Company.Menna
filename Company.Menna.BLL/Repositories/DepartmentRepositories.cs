@@ -20,9 +20,9 @@ namespace Company.Menna.BLL.Repositories
         }
      
 
-        List<Department> IDepartmentRepositories.GetByName(string name)
+        async Task< List<Department>> IDepartmentRepositories.GetByNameAsync(string name)
         {
-            return _context.Departments.Include(D => D.employees).Where(D => D.Name.ToLower().Contains(name.ToLower())).ToList();
+            return await _context.Departments.Include(D => D.employees).Where(D => D.Name.ToLower().Contains(name.ToLower())).ToListAsync();
         }
     }
 }

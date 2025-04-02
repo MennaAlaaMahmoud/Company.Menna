@@ -9,6 +9,6 @@ namespace Company.Menna.BLL.Interfaces
 {
     public interface IDepartmentRepositories : IGenericRepository<Department>
     {
-        List<Department> GetByName(string name);
+        Task<List<Department>> GetByNameAsync(string name);
     }
 }

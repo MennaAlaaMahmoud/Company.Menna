@@ -33,6 +33,8 @@ namespace Company.Menna.PL.Dtos
 
         [DisplayName("Department")]
         public int? DepartmentId { get; set; }
+        public string? ImageName { get; set; }
+        public IFormFile? Image { get; set; }
 
 
 

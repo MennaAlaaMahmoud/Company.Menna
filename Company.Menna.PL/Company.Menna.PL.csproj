@@ -19,4 +19,9 @@
     <ProjectReference Include="..\Company.Menna.BLL\Company.Menna.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\File\Images\" />
+    <Folder Include="wwwroot\File\Videos\" />
+  </ItemGroup>
+
 </Project>

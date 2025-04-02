@@ -2,7 +2,7 @@
 @inject IDepartmentRepositories _departmentRepo 
 @{
 	
-    var Departments = new SelectList(_departmentRepo.GetAll(),  "Id", "Name");
+    var Departments = new SelectList(await _departmentRepo.GetAllAsync(),  "Id", "Name");
 }
 <div class="my-3">
     <label asp-for="Name" class="col-form-label"></label>
@@ -69,3 +69,7 @@
      </select>
 </div>
 
+<div class="my-3">
+    <label asp-for="Image" class="col-form-label"></label>
+    <input asp-for="Image" type="image" class="form-control" />
+</div>

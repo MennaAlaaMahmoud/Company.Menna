@@ -45,6 +45,7 @@
         <thead>
             <tr>
 
+                <th>Image</th>
                 <th>Name</th>
                 <th>Age</th>
                 <th>Email</th>
@@ -66,6 +67,9 @@
             {
                 <tr>
 
+                   <td>
+                        <img src="~/File/Images/@item.ImageName" class= "img-fluid rounded-circle" />
+                   </td>
                     <td>@item.Name</td>
                     <td>@item.Age</td>
                     <td>@item.Email</td>
