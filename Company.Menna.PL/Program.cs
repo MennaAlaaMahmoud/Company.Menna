@@ -2,8 +2,10 @@ using Company.Menna.BLL;
 using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Data.Context;
+using Company.Menna.DAL.Models;
 using Company.Menna.PL.Mapping;
 using Company.Menna.PL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Menna.PL
@@ -28,9 +30,10 @@ namespace Company.Menna.PL
 
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile())); 
-            builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile())); 
-        
-            
+            builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile()));
+
+            builder.Services.AddIdentity<AppUser , IdentityRole>()
+                             .AddEntityFrameworkStores<CompanyDbContext>();
 
 
             // Life Time
