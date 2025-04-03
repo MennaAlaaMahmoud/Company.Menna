@@ -2,10 +2,12 @@ using System.Diagnostics;
 using System.Text;
 using Company.Menna.PL.Models;
 using Company.Menna.PL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Menna.PL.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
