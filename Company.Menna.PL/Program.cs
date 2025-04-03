@@ -21,7 +21,7 @@ namespace Company.Menna.PL
             builder.Services.AddScoped<IDepartmentRepositories, DepartmentRepositories>(); // Allow DI For DepartmentRepositories
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositories>(); // Allow DI For DepartmentRepositories
 
-            builder.Services.AddScoped<IUnitOfWork,Unitofwork >(); 
+            builder.Services.AddScoped<IUnitOfWork, Unitofwork>();
 
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
@@ -29,10 +29,10 @@ namespace Company.Menna.PL
             }); // Allow DI For CompanyDbContext
 
 
-            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile())); 
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
             builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile()));
 
-            builder.Services.AddIdentity<AppUser , IdentityRole>()
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
                              .AddEntityFrameworkStores<CompanyDbContext>();
 
 
@@ -41,11 +41,17 @@ namespace Company.Menna.PL
             //builder.Services.AddTransient(); // Create Object Life Per Operation 
             //builder.Services.AddSingleton(); // Create Object Life Per Application
 
-            builder.Services.AddScoped<IScopedService ,ScopedService>(); // Per Request
+            builder.Services.AddScoped<IScopedService, ScopedService>(); // Per Request
             builder.Services.AddTransient<ITransentService, TransentService>(); // Per Operation
             builder.Services.AddSingleton<ISingletonService, SingletonService>(); // Per Application
 
 
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/SingIn";
+
+            });
+            
 
             var app = builder.Build();
 
@@ -62,6 +68,7 @@ namespace Company.Menna.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

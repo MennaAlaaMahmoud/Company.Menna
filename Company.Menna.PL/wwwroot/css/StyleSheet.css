@@ -203,9 +203,9 @@ input.email, input.text.w3lpass {
 input[type="submit"] {
     font-size: .9em;
     color: #fff;
-    background: #76b852;
+    background: #9a90f5;
     outline: none;
-    border: 1px solid #76b852;
+    border: 1px solid #9a90f5;
     cursor: pointer;
     padding: 0.9em;
     -webkit-appearance: none;
@@ -220,7 +220,7 @@ input[type="submit"] {
         -o-transition: .5s all;
         -ms-transition: .5s all;
         transition: .5s all;
-        background: #8DC26F;
+        background: #7f77d1;
     }
 
 .agileits-top p {
@@ -240,7 +240,7 @@ input[type="submit"] {
     }
 
         .agileits-top p a:hover {
-            color: #76b852;
+            color: #9a90f5;
         }
 
 /*-- //main --*/
@@ -254,7 +254,7 @@ input[type="submit"] {
 }
 
 input.checkbox {
-    background: #8DC26F;
+    background: #9a90f5;
     cursor: pointer;
     width: 1.2em;
     height: 1.2em;

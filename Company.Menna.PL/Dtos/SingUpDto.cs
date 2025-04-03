@@ -20,7 +20,7 @@ namespace Company.Menna.PL.Dtos
 
         [Required(ErrorMessage = "Password is Required !!")]
         [DataType(DataType.Password)] // ******
-        [RegularExpression(@"^?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;""<>,.?/-]).{8,}$" , ErrorMessage = "Password must contain at least 8 characters, including an uppercase letter, a lowercase letter, a digit, and a special character !!")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}\[\]|\\:;""<>,.?/-]).{8,}$", ErrorMessage = "Password must contain at least 8 characters, including an uppercase letter, a lowercase letter, a digit, and a special character !!")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)] // ******

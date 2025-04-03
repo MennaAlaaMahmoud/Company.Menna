@@ -4,11 +4,13 @@ using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Models;
 using Company.Menna.PL.Dtos;
 using Company.Menna.PL.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 
 namespace Company.Menna.PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

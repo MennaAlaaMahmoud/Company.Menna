@@ -8,10 +8,12 @@ namespace Company.Menna.PL.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AccountController(UserManager<AppUser> userManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser>  signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         #region SingUp
@@ -72,10 +74,53 @@ namespace Company.Menna.PL.Controllers
 
 
         #region SingIn
+
+        [HttpGet]
+        public IActionResult SingIn()
+        {
+            return View();
+        }
+
+        //P@ssW0rd
+        [HttpPost] // Account/SingIn
+        public async Task< IActionResult> SingIn(SingInDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var User = await _userManager.FindByEmailAsync(model.Email);
+                if (User is not null)
+                {
+                   var flag = await _userManager.CheckPasswordAsync(User, model.Password);
+                    if (flag)
+                    {
+                        // SignIn the user
+                       var result = await _signInManager.PasswordSignInAsync(User, model.Password, model.RememberMe, false);
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+
+                        }
+
+                    }
+                }
+                ModelState.AddModelError("", "Invalid Login !!");
+            }    return View();
+        }
+
         #endregion
 
 
         #region SingOut
+
+        [HttpGet]
+        public new async Task< IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction(nameof(SingIn));
+        }
+
+
         #endregion
 
     }

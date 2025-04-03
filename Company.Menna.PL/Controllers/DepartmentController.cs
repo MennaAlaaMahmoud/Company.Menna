@@ -3,10 +3,12 @@ using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Models;
 using Company.Menna.PL.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Menna.PL.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
