@@ -1,0 +1,23 @@
+﻿@model RoleToReturnDto
+@{
+    ViewData["Title"] = "Delete";
+   // Layout = "~/Views/Home/Index.cshtml";
+}
+
+<br />
+
+<h1>Delete Page</h1>
+
+<br />
+
+<form asp-action="Delete" enctype="multipart/form-data">
+
+    <partial name="EmployeePartialView/_DeleteDetailsPartialView" />
+
+    <div>
+        <input type="submit" value="Delete" class="mt-3 btn btn-outline-danger" />
+        <a asp-action="Index" class="mt-3 ms-2 btn btn-light">Back To List</a>
+    </div>
+
+</form>
+
