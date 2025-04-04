@@ -33,7 +33,8 @@ namespace Company.Menna.PL
             builder.Services.AddAutoMapper(M => M.AddProfile(new DepartmentProfile()));
 
             builder.Services.AddIdentity<AppUser, IdentityRole>()
-                             .AddEntityFrameworkStores<CompanyDbContext>();
+                             .AddEntityFrameworkStores<CompanyDbContext>()
+                             .AddDefaultTokenProviders();
 
 
             // Life Time
