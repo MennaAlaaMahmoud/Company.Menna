@@ -37,7 +37,7 @@ namespace Company.Menna.PL.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string? SearchInput)
         {
-            IEnumerable<Employee> employees;
+           IEnumerable<Employee> employees;
             if (string.IsNullOrEmpty(SearchInput))
             {
                 employees =await _unitOfWork.employeeRepository.GetAllAsync();
@@ -63,6 +63,25 @@ namespace Company.Menna.PL.Controllers
 
             return View(employees);
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInpust)
+        {
+            IEnumerable<Employee> employees;
+            if (string.IsNullOrEmpty(SearchInpust))
+            {
+                employees = await _unitOfWork.employeeRepository.GetAllAsync();
+            }
+            else
+            {
+                employees = await _unitOfWork.employeeRepository.GetByNameAsync(SearchInpust);
+            }
+            return PartialView("EmployeePartialView/EmployeeTablePartialView", employees);
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Create()
