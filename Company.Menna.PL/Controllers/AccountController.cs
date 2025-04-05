@@ -1,6 +1,10 @@
-﻿using Company.Menna.DAL.Models;
+﻿using System.Security.Claims;
+using Company.Menna.DAL.Models;
 using Company.Menna.PL.Dtos;
 using Company.Menna.PL.Helpers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -313,6 +317,67 @@ namespace Company.Menna.PL.Controllers
         #endregion
 
 
+
+        public IActionResult GoogleLogin ()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+
+        }
+
+        public async Task <IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                Claim => new
+                {
+                    Claim.Type,
+                    Claim.Value,
+                    Claim.Issuer,
+                    Claim.OriginalIssuer
+                }
+
+
+                );
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
+
+
+
+        //public IActionResult FacebookLogin()
+        //{
+        //    var prop = new AuthenticationProperties()
+        //    {
+        //        RedirectUri = Url.Action("FacebookResponse")
+        //    };
+        //    return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+
+        //}
+
+        //public async Task<IActionResult> FacebookResponse()
+        //{
+        //    var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+        //    var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
+        //        Claim => new
+        //        {
+        //            Claim.Type,
+        //            Claim.Value,
+        //            Claim.Issuer,
+        //            Claim.OriginalIssuer
+        //        }
+
+
+        //        );
+
+        //    return RedirectToAction("Index", "Home");
+
+        //}
 
     }
 }
