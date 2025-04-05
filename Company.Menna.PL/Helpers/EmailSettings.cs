@@ -11,9 +11,9 @@ namespace Company.Menna.PL.Helpers
             // SMTP
             try
             {
-                var client = new SmtpClient("smtp.gmail.com.\r\n", 587);
+                var client = new SmtpClient("smtp.gmail.com.", 587);
                 client.EnableSsl = true;
-                client.Credentials = new NetworkCredential("menaalaa232203@gmail.com", "hvkhxdclvkukpwoo");
+                client.Credentials = new NetworkCredential("menaalaa232203@gmail.com", "fpaputzxpzkueeth");
                 client.Send("menaalaa232203@gmail.com", email.To, email.Subject, email.Body);
 
 

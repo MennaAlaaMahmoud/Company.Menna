@@ -3,8 +3,10 @@ using Company.Menna.BLL.Interfaces;
 using Company.Menna.BLL.Repositories;
 using Company.Menna.DAL.Data.Context;
 using Company.Menna.DAL.Models;
+using Company.Menna.PL.Helpers;
 using Company.Menna.PL.Mapping;
 using Company.Menna.PL.Services;
+using Company.Menna.PL.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,9 +49,18 @@ namespace Company.Menna.PL
             builder.Services.AddSingleton<ISingletonService, SingletonService>(); // Per Application
 
 
+
+            builder.Services.Configure<Mailsettings>(builder.Configuration.GetSection(nameof(Mailsettings)));
+            builder.Services.AddScoped<IMailService, MailService>();
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
+            builder.Services.AddTransient<ITwilioService,TwilioService>();
+
+
+
             builder.Services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Account/SingIn";
+               // config.AccessDeniedPath= "/Account/AccessDenied";
 
             });
             

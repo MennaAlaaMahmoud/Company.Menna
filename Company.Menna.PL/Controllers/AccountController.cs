@@ -10,11 +10,15 @@ namespace Company.Menna.PL.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMailService _mailService;
+        private readonly ITwilioService _twilioService;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser>  signInManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMailService mailService, ITwilioService twilioService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _mailService = mailService;
+            _twilioService = twilioService;
         }
 
         #region SingUp
@@ -32,13 +36,13 @@ namespace Company.Menna.PL.Controllers
             if (ModelState.IsValid) // Server sid Validation
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
-                if (user is null )
+                if (user is null)
                 {
                     user = await _userManager.FindByEmailAsync(model.Email);
-                    if (user is  null)
+                    if (user is null)
                     {
                         // Register User
-                         user = new AppUser()
+                        user = new AppUser()
                         {
                             UserName = model.UserName,
                             FirstName = model.FirstName,
@@ -84,18 +88,18 @@ namespace Company.Menna.PL.Controllers
 
         //P@ssW0rd
         [HttpPost] // Account/SingIn
-        public async Task< IActionResult> SingIn(SingInDto model)
+        public async Task<IActionResult> SingIn(SingInDto model)
         {
             if (ModelState.IsValid)
             {
                 var User = await _userManager.FindByEmailAsync(model.Email);
                 if (User is not null)
                 {
-                   var flag = await _userManager.CheckPasswordAsync(User, model.Password);
+                    var flag = await _userManager.CheckPasswordAsync(User, model.Password);
                     if (flag)
                     {
                         // SignIn the user
-                       var result = await _signInManager.PasswordSignInAsync(User, model.Password, model.RememberMe, false);
+                        var result = await _signInManager.PasswordSignInAsync(User, model.Password, model.RememberMe, false);
                         if (result.Succeeded)
                         {
                             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -103,9 +107,12 @@ namespace Company.Menna.PL.Controllers
                         }
 
                     }
+
                 }
                 ModelState.AddModelError("", "Invalid Login !!");
-            }    return View();
+
+            }
+            return View(model);
         }
 
         #endregion
@@ -114,7 +121,7 @@ namespace Company.Menna.PL.Controllers
         #region SingOut
 
         [HttpGet]
-        public new async Task< IActionResult> SignOut()
+        public new async Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
 
@@ -134,11 +141,11 @@ namespace Company.Menna.PL.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SendResetPasswordUrl( ForgetPasswordDto model)
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordDto model)
         {
             if (ModelState.IsValid)
             {
-               var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user is not null)
                 {
                     // Generate Token
@@ -148,7 +155,7 @@ namespace Company.Menna.PL.Controllers
 
 
                     // Create URL
-                    var url  =  Url.Action("ResetPassword", "Account", new {email = model.Email,token} ,Request.Scheme);
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
 
 
 
@@ -159,26 +166,94 @@ namespace Company.Menna.PL.Controllers
                         To = model.Email,
                         Subject = "Reset Password",
                         Body = url
-                               
+
                     };
 
                     // Send Email
-                    var flag = EmailSettings.SendEmail(email);
-                    if (flag)
-                    {
-                        //  Check Your Index
+                    //var flag = EmailSettings.SendEmail(email);
+                    //if (flag)
+                    //{
+                    //    //  Check Your Index
 
-                        return RedirectToAction("CheckYourIndex");
+                    //    return RedirectToAction("CheckYourIndex");
 
-                    }
+                    //}
+
+                    _mailService.SendEmail(email);
+
+                    return RedirectToAction("CheckYourIndex");
+
+
                 }
+                ModelState.AddModelError("", "Invalid Reset Password  !!");
+
 
             }
 
-            ModelState.AddModelError("", "Invalid Reset Password  !!");
-            return View("ForgetPassword",model);
+            return View("ForgetPassword", model);
         }
         #endregion
+
+
+        #region CheckYourPhone
+
+        [HttpGet]
+        public IActionResult CheckYourPhone()
+        {
+            return View();
+        }
+        #endregion
+
+        [HttpPost]
+
+        public async Task<IActionResult> SendResentPasswordSms(ForgetPasswordDto model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null)
+                {
+
+                    // Generate Token 
+                    var Token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+
+                    // Create URL 
+
+                    //var url = Url.Action("ResetPassword", "Account", new { model.Email, Token }, Request.Scheme);
+
+                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = model.Email, Token }, Request.Scheme);
+
+                    // Create Sms 
+
+                    var sms = new Sms()
+                    {
+                      PhoneNumber =user.PhoneNumber,
+                        Body = PasswordURL
+                    };
+
+                    // Send Email 
+
+                    // Old Way :
+                    //var flag = EmailSetting.SendEmail(email);
+
+                    // New Way :
+
+                    _twilioService.SendSms(sms);
+
+                    // Send Check Your Phone 
+                    return RedirectToAction(nameof(CheckYourPhone));
+                 //  return Ok("Check Your Phone");
+                }
+
+
+            }
+            ModelState.AddModelError("", "Invalid Resert Password ");
+
+            return View("ForgetPassword",model);
+        }
+
 
         #region CheckYourIndex
 
@@ -190,10 +265,18 @@ namespace Company.Menna.PL.Controllers
         #endregion
 
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+
+
+
         #region Reset Password
 
         [HttpGet]
-        public IActionResult ResetPassword(string email ,string token)
+        public IActionResult ResetPassword(string email, string token)
         {
             TempData["email"] = email;
             TempData["token"] = token;
@@ -213,7 +296,7 @@ namespace Company.Menna.PL.Controllers
                 var user = await _userManager.FindByEmailAsync(email);
                 if (user is not null)
                 {
-                   var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("SingIn");
@@ -223,7 +306,7 @@ namespace Company.Menna.PL.Controllers
                 ModelState.AddModelError("", "Invalid Reset Password Operation  !!");
 
             }
-                return View();
+            return View();
         }
 
 
