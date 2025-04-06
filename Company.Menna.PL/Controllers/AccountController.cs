@@ -350,34 +350,34 @@ namespace Company.Menna.PL.Controllers
 
 
 
-        //public IActionResult FacebookLogin()
-        //{
-        //    var prop = new AuthenticationProperties()
-        //    {
-        //        RedirectUri = Url.Action("FacebookResponse")
-        //    };
-        //    return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+        public IActionResult FacebookLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+            };
+            return Challenge(prop, FacebookDefaults.AuthenticationScheme);
 
-        //}
+        }
 
-        //public async Task<IActionResult> FacebookResponse()
-        //{
-        //    var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
-        //    var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
-        //        Claim => new
-        //        {
-        //            Claim.Type,
-        //            Claim.Value,
-        //            Claim.Issuer,
-        //            Claim.OriginalIssuer
-        //        }
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                Claim => new
+                {
+                    Claim.Type,
+                    Claim.Value,
+                    Claim.Issuer,
+                    Claim.OriginalIssuer
+                }
 
 
-        //        );
+                );
 
-        //    return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
 
-        //}
+        }
 
     }
 }

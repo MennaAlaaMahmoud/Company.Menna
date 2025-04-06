@@ -21,6 +21,30 @@ namespace Company.Menna.PL
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
+            //builder.Services.AddAuthentication(Options =>
+            //{
+            //    Options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    Options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //}).AddGoogle(Options =>
+            //{
+            //    Options.ClientId = builder.Configuration["Authentiction:Google:ClientId"];
+            //    Options.ClientSecret = builder.Configuration["Authentiction:Google:ClientSecret"];
+            //});
+
+
+            //builder.Services.AddAuthentication(Options =>
+            //{
+            //    Options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+            //    Options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            //}).AddFacebook(Options =>
+            //{
+            //    Options.ClientId = builder.Configuration["Authentiction:Facebook:ClientId"];
+            //    Options.ClientSecret = builder.Configuration["Authentiction:Facebook:ClientSecret"];
+            //});
+
+
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IDepartmentRepositories, DepartmentRepositories>(); // Allow DI For DepartmentRepositories
@@ -78,15 +102,15 @@ namespace Company.Menna.PL
             });
 
 
-            //builder.Services.AddAuthentication(Options =>
-            //{
-            //    Options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
-            //    Options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
-            //}).AddFacebook(Options =>
-            //{
-            //    Options.ClientId = builder.Configuration["Authentiction:Facebook:ClientId"];
-            //    Options.ClientSecret = builder.Configuration["Authentiction:Facebook:ClientSecret"];
-            //});
+            builder.Services.AddAuthentication(Options =>
+            {
+                Options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+                Options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            }).AddFacebook(Options =>
+            {
+                Options.ClientId = builder.Configuration["Authentiction:Facebook:ClientId"];
+                Options.ClientSecret = builder.Configuration["Authentiction:Facebook:ClientSecret"];
+            });
 
 
 
