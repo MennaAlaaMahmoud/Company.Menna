@@ -7,11 +7,13 @@ using Company.Menna.PL.Helpers;
 using Company.Menna.PL.Mapping;
 using Company.Menna.PL.Services;
 using Company.Menna.PL.Settings;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Company.Menna.PL
 {
@@ -21,27 +23,18 @@ namespace Company.Menna.PL
         {
             var builder = WebApplication.CreateBuilder(args);
 
+          
 
-            //builder.Services.AddAuthentication(Options =>
-            //{
-            //    Options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-            //    Options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //}).AddGoogle(Options =>
-            //{
-            //    Options.ClientId = builder.Configuration["Authentiction:Google:ClientId"];
-            //    Options.ClientSecret = builder.Configuration["Authentiction:Google:ClientSecret"];
-            //});
+            builder.Services.AddAuthentication(Options =>
+            {
+                Options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+                Options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            }).AddFacebook(Options =>
+            {
+                Options.ClientId = builder.Configuration["Authentiction:Facebook:ClientId"];
+                Options.ClientSecret = builder.Configuration["Authentiction:Facebook:ClientSecret"];
+            });
 
-
-            //builder.Services.AddAuthentication(Options =>
-            //{
-            //    Options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
-            //    Options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
-            //}).AddFacebook(Options =>
-            //{
-            //    Options.ClientId = builder.Configuration["Authentiction:Facebook:ClientId"];
-            //    Options.ClientSecret = builder.Configuration["Authentiction:Facebook:ClientSecret"];
-            //});
 
 
 
@@ -99,17 +92,6 @@ namespace Company.Menna.PL
             {
                 Options.ClientId = builder.Configuration["Authentiction:Google:ClientId"];
                 Options.ClientSecret = builder.Configuration["Authentiction:Google:ClientSecret"];
-            });
-
-
-            builder.Services.AddAuthentication(Options =>
-            {
-                Options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
-                Options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
-            }).AddFacebook(Options =>
-            {
-                Options.ClientId = builder.Configuration["Authentiction:Facebook:ClientId"];
-                Options.ClientSecret = builder.Configuration["Authentiction:Facebook:ClientSecret"];
             });
 
 
