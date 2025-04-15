@@ -103,12 +103,11 @@ img {
 
 /*-- end reset --*/
 body {
-    background: #9a90f5;
-    /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #9a90f5, #8DC26F);
-    background: -moz-linear-gradient(to top, #9a90f5, #8DC26F);
-    background: -o-linear-gradient(to top, #9a90f5, #8DC26F);
-    background: linear-gradient(to top, #9a90f5, #8DC26F);
+    background: #ffb6b9;
+    background: -webkit-linear-gradient(to top, #ffb6b9, #ffdfba);
+    background: -moz-linear-gradient(to top, #ffb6b9, #ffdfba);
+    background: -o-linear-gradient(to top, #ffb6b9, #ffdfba);
+    background: linear-gradient(to top, #ffb6b9, #ffdfba);
     background-size: cover;
     background-attachment: fixed;
     font-family: 'Roboto', sans-serif;
@@ -142,23 +141,22 @@ h1 {
 
 input[type="text"], input[type="email"], input[type="password"] {
     font-size: 0.9em;
-    color: #fff;
+    color: #333;
     font-weight: 100;
     width: 94.5%;
     display: block;
     border: none;
     padding: 0.8em;
     border: solid 1px rgba(255, 255, 255, 0.37);
-    -webkit-transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
-    transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
     background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 96%, #fff 4%);
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #fff 4%);
     background-position: -800px 0;
     background-size: 100%;
     background-repeat: no-repeat;
-    color: #fff;
+    color: #333;
     font-family: 'Roboto', sans-serif;
 }
+
 
 input.email, input.text.w3lpass {
     margin: 2em 0;
@@ -200,19 +198,20 @@ input.email, input.text.w3lpass {
     color: #fff;
 }
 
+
 input[type="submit"] {
     font-size: .9em;
     color: #fff;
-    background: #9a90f5;
+    background: #ff9b85;
     outline: none;
-    border: 1px solid #9a90f5;
+    border: 1px solid #ff9b85;
     cursor: pointer;
     padding: 0.9em;
-    -webkit-appearance: none;
     width: 100%;
     margin: 2em 0;
     letter-spacing: 4px;
 }
+
 
     input[type="submit"]:hover {
         -webkit-transition: .5s all;
@@ -220,7 +219,8 @@ input[type="submit"] {
         -o-transition: .5s all;
         -ms-transition: .5s all;
         transition: .5s all;
-        background: #7f77d1;
+       background: #ff6f4f;
+
     }
 
 .agileits-top p {
@@ -240,7 +240,7 @@ input[type="submit"] {
     }
 
         .agileits-top p a:hover {
-            color: #9a90f5;
+            color: #ff9b85;
         }
 
 /*-- //main --*/
@@ -254,7 +254,7 @@ input[type="submit"] {
 }
 
 input.checkbox {
-    background: #9a90f5;
+    background: #ff9b85;
     cursor: pointer;
     width: 1.2em;
     height: 1.2em;

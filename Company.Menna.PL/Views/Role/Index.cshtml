@@ -1,36 +1,29 @@
 ﻿@model IEnumerable<RoleToReturnDto>
 @{
     ViewData["Title"] = "Index";
-   // Layout = "~/Views/Home/Index.cshtml";
 }
 
-<br />
-<h1>All Roles</h1>
-
-<br />
+<h1 class="text-center mb-4" style="color: #f4a8b4;">All Roles</h1>
 
 <form>
-    <div class="container">
+    <div class="container mb-4">
         <div class="row">
             <div class="col-6">
                 <input id="SearchInput" placeholder="Search By Name" name="SearchInput" class="form-control" />
             </div>
             <div class="col-6">
-                <input type="submit" value="Search" class=" btn btn-primary"
+                <input type="submit" value="Search" class="btn btn-light" style="background-color: #c8e6c9; color: #2e7d32;" />
             </div>
         </div>
     </div>
 </form>
 
-<a asp-action="Create" class="mb-3 mt-4 btn btn-primary">Create Role</a>
-
-
-<br />
+<a asp-action="Create" class="mb-3 mt-4 btn" style="background-color: #f48fb1; color: white;">Create Role</a>
 
 @if (Model.Count() > 0)
 {
-    <table class="table table-striped table-hover ">
-        <thead>
+    <table class="table table-striped table-hover shadow-sm rounded" style="background-color: transparent;">
+        <thead style="background-color: #fce4ec; color: #000;">
             <tr>
                 <th>Id</th>
                 <th>Name</th>
@@ -46,27 +39,25 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning">Details</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm" style="background-color: #f8bbd0; color: #880e4f;">Details</a>
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success">Update</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm" style="background-color: #f48fb1; color: white;">Update</a>
                     </td>
                     <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm" style="background-color: #f06292; color: white;">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
 }
 else
 {
-    <div class="mt-4 alert alert-success text-center">
-        <h4>There Are No Roles</h4>
+    <div class="mt-4 alert alert-danger text-center">
+        <h4>There Are No Roles :(</h4>
     </div>
 }
-
 </div>
 </div>
 </div>

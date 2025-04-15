@@ -1,7 +1,7 @@
 ﻿@model SingInDto
 @{
-    ViewData["Title"] = "SingIn";
-    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+	ViewData["Title"] = "SingIn";
+	Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
 <div class="main-agileinfo">
@@ -20,24 +20,27 @@
 			<input type="submit" value="SIGNIN">
 		</form>
 
-		@*  Sing In with Google *@
+		@* Sing In with Google and Facebook *@
 		<br />
-
-		<a asp-action="GoogleLogin" style="display:block;margin:0 auto;text-align:center;color:white ;width:50% "> Sing In With Google</a>
-		@*  Sing In with Facebook *@
-		<a asp-action="FacebookLogin" style="display:block;margin:0 auto;text-align:center;color:white ;width:50% "> Sing In With Facebook</a>  
+		<div class="social-buttons-container" style="display: flex; justify-content: space-between; gap: 10px;">
+			<a asp-action="GoogleLogin" class="social-login-btn" style="flex: 1; display: block; text-align: center; background-color:#db4437; color:white; padding:10px; border-radius:5px;">
+				<i class="fab fa-google" style="margin-right:10px;"></i> Sing In With Google
+			</a>
+			<a asp-action="FacebookLogin" class="social-login-btn" style="flex: 1; display: block; text-align: center; background-color:#3b5998; color:white; padding:10px; border-radius:5px;">
+				<i class="fab fa-facebook-f" style="margin-right:10px;"></i> Sing In With Facebook
+			</a>
+		</div>
 		<br />
 
 		<p>Don't have an Account? <a asp-action="SingUp"> Create New Account ? </a></p>
 		<br />
 		<br />
 
-		<p>  <a asp-action="ForgetPassword"> Forget Password </a></p>
+		<p><a asp-action="ForgetPassword"> Forget Password </a></p>
 	</div>
 </div>
 
 @section ValidationSection {
 	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
 }

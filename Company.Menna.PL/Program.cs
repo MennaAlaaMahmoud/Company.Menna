@@ -96,6 +96,15 @@ namespace Company.Menna.PL
 
 
 
+            //builder.Services.AddAuthentication(options => 
+            //{ options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    options.DefaultScheme = IdentityConstants.ApplicationScheme; 
+            //    options.DefaultSignInScheme = IdentityConstants.ExternalScheme; 
+            //    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme; })
+            //    .AddGoogle(o => { o.ClientId = builder.Configuration["Authentiction:Google:ClientId"];
+            //    o.ClientSecret = builder.Configuration["Authentiction:Google:ClientSecret"]; });
+
+
 
             var app = builder.Build();
 
