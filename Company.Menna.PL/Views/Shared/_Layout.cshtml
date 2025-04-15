@@ -20,26 +20,36 @@
 
         /* Navbar Color */
         .navbar {
-            background-color: #3f72af; /* لون أزرق ملكي */
+            background-color: #f4d1d7; /* لون وردي هادي */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* إضافة ظل للـ navbar */
         }
 
-        /* جعل النصوص داخل navbar باللون الأسود */
         .navbar-nav .nav-link {
-            color: black !important;
+            color: #5a5a5a !important; /* لون النص داخل navbar باللون الرمادي الداكن */
             margin-right: 15px;
         }
 
             .navbar-nav .nav-link:hover {
-                color: #333333; /* اللون عند التمرير */
+                color: #e06f75 !important; /* لون الوردي عند التمرير */
             }
 
         .navbar-brand {
             font-weight: bold;
             font-size: 1.25rem;
-            color: black !important; /* جعل النصوص باللون الأسود */
+            color: #5a5a5a !important; /* لون النص بالرمادي الداكن */
         }
 
-      
+        /* تحسين زر الـ SignOut */
+        .nav-link.btn-danger {
+            background-color: #f99e9e !important; /* وردي ناعم */
+            border: none;
+            color: #fff;
+        }
+
+            .nav-link.btn-danger:hover {
+                background-color: #f77d7d !important; /* أفتح عند التمرير */
+            }
+
     </style>
 </head>
 <body>
@@ -48,7 +58,7 @@
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-building"></i> Company.Menna.PL
+                    <i class="fas fa-building"></i> Company
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,11 +100,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer text-muted mt-auto border-top">
+    <footer class="footer text-muted mt-auto border-top" style="text-align: center; ">
         <div class="container">
-            &copy; 2025 - Company.Menna.PL - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - Company.Menna.PL -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #f8a9c2;">Privacy</a>
         </div>
     </footer>
+
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

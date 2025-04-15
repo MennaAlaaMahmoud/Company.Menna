@@ -125,6 +125,7 @@ namespace Company.Menna.PL.Controllers
         #region SingOut
 
         [HttpGet]
+      
         public new async Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
@@ -233,7 +234,7 @@ namespace Company.Menna.PL.Controllers
 
                     var sms = new Sms()
                     {
-                      PhoneNumber =user.PhoneNumber,
+                        PhoneNumber = user.PhoneNumber,
                         Body = PasswordURL
                     };
 
@@ -248,14 +249,14 @@ namespace Company.Menna.PL.Controllers
 
                     // Send Check Your Phone 
                     return RedirectToAction(nameof(CheckYourPhone));
-                 //  return Ok("Check Your Phone");
+                    //  return Ok("Check Your Phone");
                 }
 
 
             }
             ModelState.AddModelError("", "Invalid Resert Password ");
 
-            return View("ForgetPassword",model);
+            return View("ForgetPassword", model);
         }
 
 

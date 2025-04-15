@@ -13,17 +13,62 @@
     /* Flexbox لتوسيط المحتوى */
     .d-flex {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
+        justify-content: center; /* لتوسيط المحتوى أفقيًا */
+        align-items: center; /* لتوسيط المحتوى عموديًا */
+        height: 50vh; /* أخذ نصف ارتفاع الصفحة */
+    }
+
+    /* تأثير إضاءة على النص */
+    h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        background: linear-gradient(90deg, rgba(255, 0, 0, 0.7), rgba(255, 255, 0, 0.7)); /* الخلفية الأصلية */
+        -webkit-background-clip: text;
+        color: transparent;
+        text-align: center;
+        margin: 0; /* إزالة أي هوامش قد تؤدي إلى تحريك النص */
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4);
+        transition: text-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+        h1:hover {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+    /* إضافة تأثير الإيموجي */
+    .emoji {
+        font-size: 3rem;
+        display: inline-block;
+        margin-left: 10px;
+        transition: transform 0.3s ease-in-out;
+        color: transparent; /* نفس لون النص */
+        background: linear-gradient(90deg, rgba(255, 0, 0, 0.7), rgba(255, 255, 0, 0.7)); /* نفس تأثير اللون */
+        -webkit-background-clip: text;
+    }
+
+        .emoji:hover {
+            transform: translateY(-10px);
+        }
+
+    p {
+        font-size: 1.2rem;
+        color: #333;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
     }
 </style>
 
 <div class="d-flex">
     <div class="text-center">
-        <h1 class="display-4 text-dark">Welcome to Company</h1>
-        <p class="lead text-dark">
-            Learn about <a href="https://learn.microsoft.com/aspnet/core" target="_blank" class="text-decoration-none text-dark">building Web apps with ASP.NET Core</a>.
-        </p>
+        <h1>Welcome to Company <span class="emoji">🤍</span></h1>
+       @*  <p class="lead">
+            <a href="https://learn.microsoft.com/aspnet/core" target="_blank" class="text-decoration-none">Learn about building Web apps with ASP.NET Core</a>.
+        </p> *@
     </div>
 </div>

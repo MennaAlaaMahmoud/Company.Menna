@@ -4,11 +4,67 @@
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="main-agileinfo">
-	<div class="agileits-top">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Message Check</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: white; /* خلفية بيضاء */
+            color: #e91e63; /* لون النص الوردي */
+            font-family: Arial, sans-serif;
+        }
 
-		<p> Check Your Index :)</p>
+        .container {
+            text-align: center;
+            border: 3px solid #f8a9c2; /* إطار وردي */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(248, 169, 194, 0.3);
+            background-color: white;
+            position: relative;
+        }
 
-	</div>
-</div>
+        h1 {
+            font-family: 'Impact', Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 4em;
+            color: #e91e63;
+            text-shadow: 1px 1px 3px rgba(248, 169, 194, 0.4); /* ظل وردي خفيف */
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="animatedText">Check Your Index </h1>
+    </div>
+
+    <script>
+        window.onload = function () {
+            const textElement = document.getElementById('animatedText');
+            textElement.classList.add('show');
+
+            let isLight = true;
+            const colorChangeInterval = setInterval(() => {
+                textElement.style.color = isLight ? '#f06292' : '#e91e63';
+                isLight = !isLight;
+            }, 500);
+
+            setTimeout(() => clearInterval(colorChangeInterval), 10000);
+        };
+    </script>
+</body>
+</html>
 
